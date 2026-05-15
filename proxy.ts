@@ -4,7 +4,7 @@ import { COOKIE_NAME, verifyToken } from "@/lib/auth";
 export const config = {
   matcher: [
     // Match everything except next internals, manifest, icons, sw, and /unlock
-    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icons/|sw.js|unlock).*)",
+    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icons/|sw.js|unlock|healthz).*)",
   ],
 };
 
