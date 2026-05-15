@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Day {
+  id              String           @id @default(cuid())
+  date            DateTime         @unique @db.Date
+  weekNumber      Int
+  phase           String
+  sessionType     String
+  status          String           @default("pending")
+  percentComplete Int              @default(0)
+  notes           String?
+  planned         PlannedActivity[]
+  logged          LoggedActivity[]
+
+  @@index([weekNumber])
+  @@index([date])
+}
+
+model PlannedActivity {
+  id              String           @id @default(cuid())
+  dayId           String
+  day             Day              @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  order           Int
+  kind            String
+  label           String
+  targetValue     Float?
+  targetUnit      String?
+  targetSets      Int?
+  targetRepsLow   Int?
+  targetRepsHigh  Int?
+  perSide         Boolean          @default(false)
+  logged          LoggedActivity[]
+
+  @@unique([dayId, order])
+  @@index([label])
+}
+
+model LoggedActivity {
+  id                String           @id @default(cuid())
+  dayId             String
+  day               Day              @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  plannedActivityId String?
+  plannedActivity   PlannedActivity? @relation(fields: [plannedActivityId], references: [id], onDelete: SetNull)
+  distanceM         Int?
+  durationSec       Int?
+  avgHr             Int?
+  poolNotOpenWater  Boolean?
+  setsJson          Json?
+  customLabel       String?
+  notes             String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([dayId])
+  @@index([plannedActivityId])
+}
+
+model BodyMeasurement {
+  id           String   @id @default(cuid())
+  date         DateTime @unique @db.Date
+  weightKg     Float?
+  muscleMassKg Float?
+  bodyFatPct   Float?
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
