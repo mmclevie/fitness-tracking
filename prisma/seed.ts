@@ -1,11 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { DateTime } from "luxon";
 import { buildPlan } from "../lib/plan";
-import { TZ, WEEK_1_START } from "../lib/dates";
+import { TZ, WEEK_1_START, isoToDbDate } from "../lib/dates";
 
 const prisma = new PrismaClient();
 
 async function main() {
+  const reset = process.argv.includes("--reset");
+  if (reset) {
+    const deleted = await prisma.day.deleteMany({});
+    console.log(`Reset: deleted ${deleted.count} existing Day rows (and cascaded children)`);
+  }
+
   const plan = buildPlan();
   const week1 = DateTime.fromISO(WEEK_1_START, { zone: TZ }).startOf("day");
 
@@ -15,7 +21,7 @@ async function main() {
   for (const week of plan) {
     for (const day of week.days) {
       const date = week1.plus({ days: (week.weekNumber - 1) * 7 + (day.weekdayMonday1to7 - 1) });
-      const dateJs = date.toJSDate();
+      const dateJs = isoToDbDate(date.toISODate()!);
 
       // Upsert Day (preserves user data on re-seed)
       const dbDay = await prisma.day.upsert({

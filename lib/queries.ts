@@ -1,6 +1,6 @@
 import { prisma } from "./db";
 import { DateTime } from "luxon";
-import { TZ, WEEK_1_START, TOTAL_WEEKS } from "./dates";
+import { TZ, WEEK_1_START, TOTAL_WEEKS, isoToDbDate } from "./dates";
 import type { Prisma } from "@prisma/client";
 
 export type DayFull = Prisma.DayGetPayload<{ include: { planned: true; logged: true } }>;
@@ -13,9 +13,8 @@ export async function getAllDays(): Promise<DayFull[]> {
 }
 
 export async function getDayByDate(isoDate: string): Promise<DayFull | null> {
-  const dt = DateTime.fromISO(isoDate, { zone: TZ }).startOf("day").toJSDate();
   return prisma.day.findUnique({
-    where: { date: dt },
+    where: { date: isoToDbDate(isoDate) },
     include: { planned: { orderBy: { order: "asc" } }, logged: { orderBy: { createdAt: "asc" } } },
   });
 }

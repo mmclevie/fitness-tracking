@@ -1,6 +1,6 @@
 import { getAllBodyMeasurements } from "@/lib/queries";
 import { DateTime } from "luxon";
-import { TZ, today } from "@/lib/dates";
+import { today, dbDateToISO } from "@/lib/dates";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { BodyForm } from "@/components/body/body-form";
 import { BodyChart, type BodyPoint } from "@/components/charts/body-chart";
@@ -23,7 +23,7 @@ interface Measurement {
 function weeklyAverages(measurements: Measurement[]): BodyPoint[] {
   const buckets = new Map<string, { weights: number[]; muscles: number[]; bfs: number[]; firstDate: DateTime }>();
   for (const m of measurements) {
-    const d = DateTime.fromJSDate(m.date, { zone: TZ });
+    const d = DateTime.fromISO(dbDateToISO(m.date));
     const key = isoWeekKey(d);
     const b = buckets.get(key) ?? { weights: [], muscles: [], bfs: [], firstDate: d };
     if (m.weightKg != null) b.weights.push(m.weightKg);
@@ -65,7 +65,7 @@ export default async function BodyPage() {
         {latest && (
           <Card>
             <CardHeader>
-              <CardTitle>Latest · {DateTime.fromJSDate(latest.date, { zone: TZ }).toFormat("d LLL")}</CardTitle>
+              <CardTitle>Latest · {DateTime.fromISO(dbDateToISO(latest.date)).toFormat("d LLL")}</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-3 gap-2 text-sm">
               <div>

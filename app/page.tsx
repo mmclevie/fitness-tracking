@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { getAllDays, planSpan, type DayFull } from "@/lib/queries";
 import { computeDayStatus, type StatusColour } from "@/lib/status";
-import { TZ, today } from "@/lib/dates";
+import { today, dbDateToISO } from "@/lib/dates";
 import { DayRow } from "@/components/calendar/day-row";
 import { WeekSummary } from "@/components/calendar/week-summary";
 import { TodayFab } from "@/components/calendar/today-fab";
@@ -51,7 +51,7 @@ export default async function CalendarPage() {
   const renderEnd = end.endOf("week");
 
   // Group days by ISO week (Monday-start)
-  const byDate = new Map(days.map((d) => [DateTime.fromJSDate(d.date, { zone: TZ }).toISODate()!, d]));
+  const byDate = new Map(days.map((d) => [dbDateToISO(d.date), d]));
 
   type WeekGroup = { weekNumber: number | null; phase: string; dates: DateTime[] };
   const groups: WeekGroup[] = [];

@@ -2,8 +2,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
-import { DateTime } from "luxon";
-import { TZ } from "@/lib/dates";
+import { isoToDbDate } from "@/lib/dates";
 
 const Schema = z.object({
   date: z.string(),
@@ -15,7 +14,7 @@ const Schema = z.object({
 
 export async function saveBodyMeasurement(input: z.infer<typeof Schema>) {
   const data = Schema.parse(input);
-  const date = DateTime.fromISO(data.date, { zone: TZ }).startOf("day").toJSDate();
+  const date = isoToDbDate(data.date);
   await prisma.bodyMeasurement.upsert({
     where: { date },
     update: {

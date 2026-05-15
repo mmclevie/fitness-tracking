@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/db";
-import { DateTime } from "luxon";
-import { TZ } from "@/lib/dates";
+import { dbDateToISO } from "@/lib/dates";
 import { StrengthChart, type StrengthPoint } from "@/components/charts/strength-chart";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
@@ -43,7 +42,7 @@ export default async function StrengthPage() {
     const label = l.plannedActivity.label;
     const sets = (l.setsJson as unknown as SetEntry[]) ?? [];
     if (sets.length === 0) continue;
-    const dateISO = DateTime.fromJSDate(l.day.date, { zone: TZ }).toISODate()!;
+    const dateISO = dbDateToISO(l.day.date);
     const topSetKg = Math.max(...sets.map((s) => s.weightKg));
     const avgKg = sets.reduce((a, s) => a + s.weightKg, 0) / sets.length;
     const topReps = Math.max(...sets.map((s) => s.reps));

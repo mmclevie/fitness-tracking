@@ -4,8 +4,8 @@
 export type Kind = "run" | "swim" | "strength" | "structure";
 
 export type SessionType =
-  | "Strength A"
-  | "Strength B"
+  | "Strength A — Squat day"
+  | "Strength B — Hinge day"
   | "Easy Run"
   | "Quality Run"
   | "Swim"
@@ -261,10 +261,10 @@ export function buildPlan(): WeekPlan[] {
         activities: [runActivity("Half marathon — 21.1km", 21.1)],
       });
     } else {
-      // Mon: Strength A
+      // Mon: Strength A — Squat day (knee-dominant + horizontal push/pull)
       days.push({
         weekdayMonday1to7: 1,
-        sessionType: "Strength A",
+        sessionType: "Strength A — Squat day",
         activities: strengthActivitiesFor(w, STRENGTH_A_EXERCISES),
       });
       // Tue: Easy Run
@@ -273,10 +273,10 @@ export function buildPlan(): WeekPlan[] {
         sessionType: "Easy Run",
         activities: [runActivity(`${data.tueEasyKm}km easy`, data.tueEasyKm)],
       });
-      // Wed: Strength B
+      // Wed: Strength B — Hinge day (hip-dominant + vertical push/pull)
       days.push({
         weekdayMonday1to7: 3,
-        sessionType: "Strength B",
+        sessionType: "Strength B — Hinge day",
         activities: strengthActivitiesFor(w, STRENGTH_B_EXERCISES),
       });
       // Thu: Quality Run

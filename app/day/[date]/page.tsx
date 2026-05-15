@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { getDayByDate } from "@/lib/queries";
 import { computeDayStatus, statusDotColour } from "@/lib/status";
-import { TZ, formatHuman } from "@/lib/dates";
+import { TZ, formatHuman, dbDateToISO } from "@/lib/dates";
 import { LogRunRow } from "@/components/day/log-run-row";
 import { LogSwimRow } from "@/components/day/log-swim-row";
 import { LogStrengthRow } from "@/components/day/log-strength-row";
@@ -30,7 +30,7 @@ async function findLastStrengthSession(label: string, beforeDate: Date) {
   if (!log || !log.setsJson) return null;
   return {
     sets: log.setsJson as unknown as SetEntry[],
-    date: DateTime.fromJSDate(log.day.date, { zone: TZ }).toISODate()!,
+    date: dbDateToISO(log.day.date),
   };
 }
 

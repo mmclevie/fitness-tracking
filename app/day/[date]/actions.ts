@@ -3,11 +3,10 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { computeDayStatus } from "@/lib/status";
-import { DateTime } from "luxon";
-import { TZ } from "@/lib/dates";
+import { isoToDbDate } from "@/lib/dates";
 
 function dateJs(iso: string) {
-  return DateTime.fromISO(iso, { zone: TZ }).startOf("day").toJSDate();
+  return isoToDbDate(iso);
 }
 
 async function recomputeDayStatus(dayId: string) {

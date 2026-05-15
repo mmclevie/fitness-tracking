@@ -43,6 +43,17 @@ export function dayDateForWeek(week: number, weekdayMonday1to7: number): DateTim
   return start.plus({ days: (week - 1) * 7 + (weekdayMonday1to7 - 1) });
 }
 
+// Postgres @db.Date stores dates without timezone. To round-trip the intended
+// Perth-local date through `Date` objects without it shifting by 8 hours and
+// landing on the previous day, we encode/decode as UTC midnight.
+export function isoToDbDate(iso: string): Date {
+  return new Date(`${iso}T00:00:00.000Z`);
+}
+
+export function dbDateToISO(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
 export function formatHuman(d: DateTime | string): string {
   const dt = typeof d === "string" ? fromISO(d) : d;
   return dt.setZone(TZ).toFormat("EEE d LLL yyyy");
