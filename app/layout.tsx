@@ -32,7 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark h-full">
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <main className="flex-1 pb-20">{children}</main>
+        <main className="flex-1 pt-[env(safe-area-inset-top)] pb-[calc(5rem+env(safe-area-inset-bottom))]">
+          {children}
+        </main>
         <BottomNav />
         <ServiceWorkerRegister />
       </body>

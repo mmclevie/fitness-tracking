@@ -16,7 +16,7 @@ export function WeekSummary({
   sessionsCompleted,
 }: Props) {
   return (
-    <div className="px-4 pt-3 pb-2 bg-background sticky top-0 z-10 border-b border-border">
+    <div className="px-4 pt-3 pb-2 bg-background sticky top-[env(safe-area-inset-top)] z-10 border-b border-border">
       <div className="flex items-baseline justify-between">
         <div>
           <div className="text-xs uppercase tracking-wider text-muted-foreground">
